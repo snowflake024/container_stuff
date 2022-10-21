@@ -1,0 +1,51 @@
+--- 
+services: 
+  app: 
+    build: 
+      args: 
+        - PORT=80
+        - SHOPIFY_API_KEY=8a9d253ee9bf73241927d8d5aad063ba
+        - SHOPIFY_API_SECRET=b6cd1c86dae536aa38de96fb220c7219
+      context: "."
+      dockerfile: Dockerfile
+    container_name: smsto_cont_TEST
+    image: shopify_smsto
+    networks: 
+      - app-network
+    ports: 
+      - "3500:80"
+    restart: unless-stopped
+    tty: true
+    volumes: 
+      - "/srv/shopify-integration/web/storage:/app/storage"
+    working_dir: /app
+  db: 
+    container_name: sms_to_db
+    environment: 
+      MYSQL_DATABASE: smsto_integration
+      MYSQL_PASSWORD: resu_otsms
+      MYSQL_ROOT_PASSWORD: mariadb
+      MYSQL_USER: smsto_user
+    image: mysql
+    networks: 
+      - app-network
+    ports: 
+      - "9906:3306"
+    restart: unless-stopped
+    tty: true
+    volumes: 
+      - "./db_backup:/var/lib/mysql"
+      - "./mysql/my.cnf:/etc/mysql/my.cnf"
+  networks: 
+    app-network: 
+      driver: bridge
+  shopify-redis: 
+    container_name: shopify-redis
+    image: "redis:6.2.4-alpine"
+    networks: 
+      - app-network
+  volumes: 
+    dbdata: 
+      driver: local
+
+version: "3"
