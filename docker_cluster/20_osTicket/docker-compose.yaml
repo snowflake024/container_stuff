@@ -8,36 +8,37 @@ services:
       - /mnt/osTicket/app:/www/osticket
       - /mnt/osTicket/app/logs:/www/logs
     environment:
-      - ${CONTAINER_NAME}
-      - ${CRON_PERIOD}
+      - CRON_PERIOD=${CRON_PERIOD}
 
-      - ${DB_HOST}
-      - ${DB_NAME}
-      - ${DB_USER}
-      - ${DB_PASS}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME$={DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
 
-#      - ${SMTP_HOST}
-#      - ${SMTP_PORT}
-#      - ${SMTP_FROM}
-#      - ${SMTP_TLS}
-#      - ${SMTP_USER}
-#      - ${SMTP_PASS}
+#      - SMTP_HOST=${SMTP_HOST}
+#      - SMTP_PORT=${SMTP_PORT}
+#      - SMTP_FROM=${SMTP_FROM}
+#      - SMTP_TLS=${SMTP_TLS}
+#      - SMTP_USER=${SMTP_USER}
+#      - SMTP_PASS=${SMTP_PASS}
 
-      - ${INSTALL_SECRET}
-      - ${INSTALL_EMAIL}
-      - ${INSTALL_NAME}
+      - INSTALL_SECRET=${INSTALL_SECRET}
+      - INSTALL_EMAIL=${INSTALL_EMAIL}
+      - INSTALL_NAME=${INSTALL_NAME}
 
-      - ${ADMIN_FIRSTNAME}
-      - ${ADMIN_LASTNAME}
-      - ${ADMIN_EMAIL}
-      - ${ADMIN_USER}
-      - ${ADMIN_PASS}
-      
-      - ${CONTAINER_NAME_1}
+      - ADMIN_FIRSTNAME=${ADMIN_FIRSTNAME}
+      - ADMIN_LASTNAME=${ADMIN_LASTNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS${ADMIN_PASS}
+
+      - CONTAINER_NAME=${CONTAINER_NAME_1}
     networks:
       - services
     ports:
       - "8081:80"
+    links:
+      - osticket-db
     restart: always
 
   osticket-db:
@@ -46,10 +47,10 @@ services:
     volumes:
       - /mnt/osTicket/db:/var/lib/mysql
     environment:
-      - ${ROOT_PASS}
-      - ${DB_NAME}
-      - ${DB_USER}
-      - ${DB_PASS}
+      - ROOT_PASS=${ROOT_PASS}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
 
       - ${CONTAINER_NAME_2}
     networks:
