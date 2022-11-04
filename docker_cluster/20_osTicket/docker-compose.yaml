@@ -1,6 +1,47 @@
 version: '3.7'
 services:
+  ## https://hub.docker.com/r/tiredofit/mariadb
+  osticket_db:
+    image: tiredofit/mariadb
+    container_name: osticket_db
+    volumes:
+      - /mnt/osTicket/db:/var/lib/mysql
+    environment:
+       - ROOT_PASS=${ROOT_PASS}
+       - DB_USER=${DB_USER}
+       - DB_PASS=${DB_PASS}
+       - DB_NAME=${DB_NAME}
 
+       - CONTAINER_NAME=osticket_db
+    networks:
+     - services
+    ports:
+     - "3306:3306"
+    restart: always
+
+  ## https://hub.docker.com/r/tiredofit/db-backup
+  osticket-db-backup:
+    container_name: osticket_db_backup
+    image: tiredofit/db-backup
+    links:
+      - osticket_db
+    volumes:
+      - /mnt/osTicket/db-backup:/backup
+      - /mnt/osTicket/custom_db_scripts:/assets/custom-scripts
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_TYPE=mariadb
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASS}
+      - DB_DUMP_FREQ=1440
+      - DB_DUMP_BEGIN=0000
+      - DB_CLEANUP_TIME=8640
+      - COMPRESSION=BZ
+      - POST_SCRIPT=/assets/custom-scripts/logging_utility.sh
+    restart: always
+
+  ## https://hub.docker.com/r/tiredofit/osticket
   osticket_app:
     image: tiredofit/osticket
     container_name: osticket_app
@@ -8,19 +49,12 @@ services:
       - /mnt/osTicket/app:/www/osticket
       - /mnt/osTicket/app/logs:/www/logs
     environment:
-      - CRON_PERIOD=${CRON_PERIOD}
+      - CRON_PERIOD=10
 
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
+      - DB_HOST=osticket_db
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
-
-#      - ${SMTP_HOST}
-#      - ${SMTP_PORT}
-#      - ${SMTP_FROM}
-#      - ${SMTP_TLS}
-#      - ${SMTP_USER}
-#      - ${SMTP_PASS}
+      - DB_NAME=${DB_NAME}
 
       - INSTALL_SECRET=${INSTALL_SECRET}
       - INSTALL_EMAIL=${INSTALL_EMAIL}
@@ -32,54 +66,14 @@ services:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
 
-      - CONTAINER_NAME=${CONTAINER_NAME_1}
+      - CONTAINER_NAME=osticket_app
     networks:
       - services
     ports:
       - "8081:80"
     links:
-      - osticket_db
+      - osticket_db:mysql
     restart: always
-
-  osticket_db:
-    image: mariadb
-    container_name: osticket_db
-    volumes:
-      - /mnt/osTicket/db:/var/lib/mysql
-    environment:
-#      - ROOT_PASS=${ROOT_PASS}
-#      - DB_NAME=${DB_NAME}
-#      - DB_USER=${DB_USER}
-#      - DB_PASS=${DB_PASS}
-
-       - MYSQL_ROOT_PASSWORD=${ROOT_PASS}
-       - MYSQL_USER=${DB_USER}
-       - MYSQL_PASSWORD=${DB_PASS}
-       - MYSQL_DATABASE=${DB_NAME}
-
-       - ${CONTAINER_NAME_2}
-    networks:
-     - services
-    restart: always
-
-#  osticket-db-backup:
-#    container_name: osticket-db-backup
-#    image: tiredofit/mariadb-backup
-#    links:
-#      - osticket-db
-#    volumes:
-#      - ./dbbackup:/backup
-#    environment:
-#      - DB_HOST=osticket-db
-#      - DB_TYPE=mariadb
-#      - DB_NAME=osticket
-#      - DB_USER=osticket
-#      - DB_PASSWORD=password12345
-#      - DB_DUMP_FREQ=1440
-#      - DB_DUMP_BEGIN=0000
-#      - DB_CLEANUP_TIME=8640
-#      - COMPRESSION=BZ
-#    restart: always
 
 networks:
   services:
