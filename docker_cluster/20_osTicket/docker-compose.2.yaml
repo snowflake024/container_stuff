@@ -1,0 +1,86 @@
+version: '3.7'
+services:
+
+  osticket_app:
+    image: tiredofit/osticket
+    container_name: osticket_app
+    volumes:
+      - /mnt/osTicket/app:/www/osticket
+      - /mnt/osTicket/app/logs:/www/logs
+    environment:
+      - CRON_PERIOD=10
+
+      - DB_HOST=osticket_db
+      - DB_NAME=osticket
+      - DB_USER=osticket
+      - DB_PASS=password12345
+
+#      - ${SMTP_HOST}
+#      - ${SMTP_PORT}
+#      - ${SMTP_FROM}
+#      - ${SMTP_TLS}
+#      - ${SMTP_USER}
+#      - ${SMTP_PASS}
+
+      - INSTALL_SECRET=mysisterisveryugly
+      - INSTALL_EMAIL=systems@waterviewtechnology.com
+      - INSTALL_NAME=OSTicketHelpdesk
+
+      - ADMIN_FIRSTNAME=Waterview
+      - ADMIN_LASTNAME=Technology
+      - ADMIN_EMAIL=systems@waterviewtechnology.com
+      - ADMIN_USER=wtadmin
+      - ADMIN_PASS=MonsterHor$eFoo7
+
+      - CONTAINER_NAME=osticket_app
+    networks:
+      - services
+    ports:
+      - "8081:80"
+    links:
+      - osticket_db
+    restart: always
+
+  osticket_db:
+    image: mariadb
+    container_name: osticket_db
+    volumes:
+      - /mnt/osTicket/db:/var/lib/mysql
+    environment:
+#      - ROOT_PASS=${ROOT_PASS}
+#      - DB_NAME=${DB_NAME}
+#      - DB_USER=${DB_USER}
+#      - DB_PASS=${DB_PASS}
+
+       - MYSQL_ROOT_PASSWORD=myuglysister
+       - MYSQL_USER=osticket
+       - MYSQL_PASSWORD=osticket
+       - MYSQL_DATABASE=osticket_db
+
+       - ${CONTAINER_NAME_2}
+    networks:
+     - services
+    restart: always
+
+#  osticket-db-backup:
+#    container_name: osticket-db-backup
+#    image: tiredofit/mariadb-backup
+#    links:
+#      - osticket-db
+#    volumes:
+#      - ./dbbackup:/backup
+#    environment:
+#      - DB_HOST=osticket-db
+#      - DB_TYPE=mariadb
+#      - DB_NAME=osticket
+#      - DB_USER=osticket
+#      - DB_PASSWORD=password12345
+#      - DB_DUMP_FREQ=1440
+#      - DB_DUMP_BEGIN=0000
+#      - DB_CLEANUP_TIME=8640
+#      - COMPRESSION=BZ
+#    restart: always
+
+networks:
+  services:
+    driver: bridge
