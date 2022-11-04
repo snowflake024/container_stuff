@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+
+  osticket_db:
+    image: mariadb
+    container_name: osticket_db
+    volumes:
+      - /mnt/osTicket/db:/var/lib/mysql
+    environment:
+       - MYSQL_ROOT_PASSWORD=myuglysister
+       - MYSQL_USER=osticket_user
+       - MYSQL_PASSWORD=osticket1234
+       - MYSQL_DATABASE=osticket
+
+       - CONTAINER_NAME=osticket_db
+    networks:
+     - services
+    ports:
+     - "3306:3306"
+    restart: always
+
+  osticket_app:
+    image: osticket/osticket
+    container_name: osticket_app
+    volumes:
+      - /mnt/osTicket/app:/www/osticket
+      - /mnt/osTicket/app/logs:/www/logs
+    environment:
+      - CRON_PERIOD=10
+      - MYSQL_HOST=osticket_db
+      - MYSQL_USER=osticket_user
+      - MYSQL_PASSWORD=osticket1234
+      - MYSQL_DATABASE=osticket
+
+      - INSTALL_SECRET=mysisterisveryugly
+      - INSTALL_EMAIL=systems1@waterviewtechnology.com
+      - INSTALL_NAME=OSTicketHelpdesk
+      - ADMIN_FIRSTNAME=Waterview
+      - ADMIN_LASTNAME=Technology
+      - ADMIN_EMAIL=systems@waterviewtechnology.com
+      - ADMIN_USER=wtadmin
+      - ADMIN_PASS=MonsterHor$eFoo7
+      - CONTAINER_NAME=osticket_app
+    networks:
+      - services
+    ports:
+      - "8081:80"
+    links:
+      - osticket_db:mysql
+    restart: always
+
+networks:
+  services:
+    driver: bridge
