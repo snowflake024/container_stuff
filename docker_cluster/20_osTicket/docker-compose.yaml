@@ -1,7 +1,7 @@
 version: '3.7'
 services:
 
-  osticket-app:
+  osticket_app:
     image: tiredofit/osticket
     container_name: osticket_app
     volumes:
@@ -11,16 +11,16 @@ services:
       - CRON_PERIOD=${CRON_PERIOD}
 
       - DB_HOST=${DB_HOST}
-      - DB_NAME$={DB_NAME}
+      - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
 
-#      - SMTP_HOST=${SMTP_HOST}
-#      - SMTP_PORT=${SMTP_PORT}
-#      - SMTP_FROM=${SMTP_FROM}
-#      - SMTP_TLS=${SMTP_TLS}
-#      - SMTP_USER=${SMTP_USER}
-#      - SMTP_PASS=${SMTP_PASS}
+#      - ${SMTP_HOST}
+#      - ${SMTP_PORT}
+#      - ${SMTP_FROM}
+#      - ${SMTP_TLS}
+#      - ${SMTP_USER}
+#      - ${SMTP_PASS}
 
       - INSTALL_SECRET=${INSTALL_SECRET}
       - INSTALL_EMAIL=${INSTALL_EMAIL}
@@ -30,7 +30,7 @@ services:
       - ADMIN_LASTNAME=${ADMIN_LASTNAME}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_USER=${ADMIN_USER}
-      - ADMIN_PASS${ADMIN_PASS}
+      - ADMIN_PASS=${ADMIN_PASS}
 
       - CONTAINER_NAME=${CONTAINER_NAME_1}
     networks:
@@ -38,21 +38,26 @@ services:
     ports:
       - "8081:80"
     links:
-      - osticket-db
+      - osticket_db
     restart: always
 
-  osticket-db:
-    image: tiredofit/mariadb
+  osticket_db:
+    image: mariadb
     container_name: osticket_db
     volumes:
       - /mnt/osTicket/db:/var/lib/mysql
     environment:
-      - ROOT_PASS=${ROOT_PASS}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
+#      - ROOT_PASS=${ROOT_PASS}
+#      - DB_NAME=${DB_NAME}
+#      - DB_USER=${DB_USER}
+#      - DB_PASS=${DB_PASS}
 
-      - ${CONTAINER_NAME_2}
+       - MYSQL_ROOT_PASSWORD=${ROOT_PASS}
+       - MYSQL_USER=${DB_USER}
+       - MYSQL_PASSWORD=${DB_PASS}
+       - MYSQL_DATABASE=${DB_NAME}
+
+       - ${CONTAINER_NAME_2}
     networks:
      - services
     restart: always
