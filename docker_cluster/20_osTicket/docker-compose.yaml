@@ -1,62 +1,59 @@
-version: '3.3'
+version: '3.7'
 services:
 
   osticket-app:
-    image: osticket/osticket
-    container_name: osticket-app
+    image: tiredofit/osticket
+    container_name: osticket_app
     volumes:
-      - type: bind
-        source: /mnt/osTicket/app
-        target: /var/www
+      - /mnt/osTicket/app:/www/osticket
+      - /mnt/osTicket/app/logs:/www/logs
     environment:
-      - CONTAINER_NAME=osticket-app
+      - ${CONTAINER_NAME}
+      - ${CRON_PERIOD}
 
-      - CRON_PERIOD=10
+      - ${DB_HOST}
+      - ${DB_NAME}
+      - ${DB_USER}
+      - ${DB_PASS}
 
-      - DB_HOST=osticket-db
-      - DB_NAME=osticket
-      - DB_USER=osticket
-      - DB_PASS=osticket12345
+#      - ${SMTP_HOST}
+#      - ${SMTP_PORT}
+#      - ${SMTP_FROM}
+#      - ${SMTP_TLS}
+#      - ${SMTP_USER}
+#      - ${SMTP_PASS}
 
-      - SMTP_HOST=localhost
-      - SMTP_PORT=25
-      - SMTP_FROM=osticket@example.com
-      - SMTP_TLS=0
-      - SMTP_USER=osticket@example.com
-      - SMTP_PASS=password
+      - ${INSTALL_SECRET}
+      - ${INSTALL_EMAIL}
+      - ${INSTALL_NAME}
 
-      - INSTALL_SECRET=somerandomlargecharacterstring
-      - INSTALL_EMAIL=osticket@example.com
-      - INSTALL_NAME=OSTicket Helpdesk
-
-      - ADMIN_FIRSTNAME=Admin
-      - ADMIN_LASTNAME=User
-      - ADMIN_EMAIL=admin@example.com
-      - ADMIN_USER=ostadmin
-      - ADMIN_PASS=Password123
-#    networks:
-#      - proxy
-#      - services
+      - ${ADMIN_FIRSTNAME}
+      - ${ADMIN_LASTNAME}
+      - ${ADMIN_EMAIL}
+      - ${ADMIN_USER}
+      - ${ADMIN_PASS}
+      
+      - ${CONTAINER_NAME_1}
+    networks:
+      - services
     ports:
       - "8081:80"
     restart: always
 
   osticket-db:
-    image: mariadb
-    container_name: osticket-db
+    image: tiredofit/mariadb
+    container_name: osticket_db
     volumes:
-      - type: bind
-        source: /mnt/osTicket/db
-        target: /var/lib/mysql
+      - /mnt/osTicket/db:/var/lib/mysql
     environment:
-      - ROOT_PASS=securepassword
-      - DB_NAME=osticket
-      - DB_USER=osticket
-      - DB_PASS=password12345
+      - ${ROOT_PASS}
+      - ${DB_NAME}
+      - ${DB_USER}
+      - ${DB_PASS}
 
-      - CONTAINER_NAME=osticket-db
-#    networks:
-#     - services
+      - ${CONTAINER_NAME_2}
+    networks:
+     - services
     restart: always
 
 #  osticket-db-backup:
@@ -78,8 +75,6 @@ services:
 #      - COMPRESSION=BZ
 #    restart: always
 
-#networks:
-#  proxy:
-#    external: true
-#  services:
-#    external: true
+networks:
+  services:
+    driver: bridge
