@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+
+  git_db:
+    image: tiredofit/mariadb
+    container_name: git_db
+    volumes:
+      - /mnt/osTicket/db:/var/lib/mysql
+    environment:
+       - ROOT_PASS=myuglysister1
+       - DB_USER=gitea_user
+       - DB_PASS=gitea1234
+       - DB_NAME=gitea_db
+
+       - CONTAINER_NAME=git_db
+    networks:
+     - services
+    ports:
+     - "3306:3306"
+    restart: always
+    
+  git-server:
+    image: gitea/gitea:latest
+    container_name: git-server
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=mysql
+      - GITEA__database__HOST=git_db:3306
+      - GITEA__database__NAME=gitea_db
+      - GITEA__database__USER=gitea_user
+      - GITEA__database__PASSWD=gitea1234
+      
+      - GITEA__security__SECRET_KEY=eobAYhbPqcoJo6qQKT8IukAaUNzsPSABuND1LAe69X0LTMcWciiyN1LWM4gMOrVz
+      - GITEA__security__INTERNAL_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2Njc4MzA0MzZ9._e_jdpgSO8k6PM8ysAyt7SnDi5f4cD5mnz8h4qDX-Zg
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - /mnt/git-server/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+    depends_on:
+      - git_db
+      
+networks:
+  gitea:
+    external: false
