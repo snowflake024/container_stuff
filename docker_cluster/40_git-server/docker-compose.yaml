@@ -14,9 +14,9 @@ services:
 
        - CONTAINER_NAME=git_db
     networks:
-     - services
-#    ports:
-#     - "3306:3306"
+     - gitea
+    ports:
+     - "3306:3306"
     restart: always
     
   git-server:
@@ -33,6 +33,8 @@ services:
       
       - GITEA__security__SECRET_KEY=eobAYhbPqcoJo6qQKT8IukAaUNzsPSABuND1LAe69X0LTMcWciiyN1LWM4gMOrVz
       - GITEA__security__INTERNAL_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2Njc4MzA0MzZ9._e_jdpgSO8k6PM8ysAyt7SnDi5f4cD5mnz8h4qDX-Zg
+      
+      - CONTAINER_NAME=git-server
     restart: always
     networks:
       - gitea
