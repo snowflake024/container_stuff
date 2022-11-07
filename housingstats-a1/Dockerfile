@@ -20,25 +20,28 @@ RUN a2enmod rewrite
 RUN ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h
 
 # Install php modules
+
 RUN docker-php-ext-install mbstring exif gd gettext gmp mysql mysqli pdo_mysql shmop
 
-RUN echo "extension=mbstring.so" >> /usr/local/etc/php/php.ini
+# Not really needed
 
-RUN echo "extension=exif.so" >> /usr/local/etc/php/php.ini
+#RUN echo "extension=mbstring.so" >> /usr/local/etc/php/php.ini
 
-RUN echo "extension=gd.so" >> /usr/local/etc/php/php.ini    
+#RUN echo "extension=exif.so" >> /usr/local/etc/php/php.ini
 
-RUN echo "extension=gettext.so" >> /usr/local/etc/php/php.ini  
+#RUN echo "extension=gd.so" >> /usr/local/etc/php/php.ini    
 
-RUN echo "extension=gmp.so" >> /usr/local/etc/php/php.ini  
+#RUN echo "extension=gettext.so" >> /usr/local/etc/php/php.ini  
 
-RUN echo "extension=mysql.so" >> /usr/local/etc/php/php.ini  
+#RUN echo "extension=gmp.so" >> /usr/local/etc/php/php.ini  
 
-RUN echo "extension=mysqli.so" >> /usr/local/etc/php/php.ini
+#RUN echo "extension=mysql.so" >> /usr/local/etc/php/php.ini  
 
-RUN echo "extension=pdo_mysql.so" >> /usr/local/etc/php/php.ini  
+#RUN echo "extension=mysqli.so" >> /usr/local/etc/php/php.ini
 
-RUN echo "extension=shmop.so" >> /usr/local/etc/php/php.ini 
+#RUN echo "extension=pdo_mysql.so" >> /usr/local/etc/php/php.ini  
+
+#RUN echo "extension=shmop.so" >> /usr/local/etc/php/php.ini 
 
 
 # Fetch php.ini
