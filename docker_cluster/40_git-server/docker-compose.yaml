@@ -5,7 +5,7 @@ services:
     image: tiredofit/mariadb
     container_name: git_db
     volumes:
-      - /mnt/osTicket/db:/var/lib/mysql
+      - /mnt/git-server/db:/var/lib/mysql
     environment:
        - ROOT_PASS=myuglysister1
        - DB_USER=gitea_user
@@ -15,8 +15,8 @@ services:
        - CONTAINER_NAME=git_db
     networks:
      - services
-    ports:
-     - "3306:3306"
+#    ports:
+#     - "3306:3306"
     restart: always
     
   git-server:
@@ -41,7 +41,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "3000:3000"
+      - "8082:3000"
       - "222:22"
     depends_on:
       - git_db
