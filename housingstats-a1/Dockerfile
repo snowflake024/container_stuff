@@ -32,8 +32,6 @@ RUN echo "RewriteCond %{HTTP:Proxy-user} ^(.*)$" >> /etc/apache2/sites-enabled/0
 RUN echo "RewriteRule .* - [E=REMOTE_USER:%1]" >> /etc/apache2/sites-enabled/000-default.conf
 RUN echo "</VirtualHost>" >> /etc/apache2/sites-enabled/000-default.conf
 
-
-
 # Fix file permissions in /var/log/html\ directory
 
 RUN chown -R www-data:www-data /var/www/html
