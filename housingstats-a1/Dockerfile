@@ -23,8 +23,14 @@ RUN sed -i "s/DocumentRoot .*/DocumentRoot \/var\/www\/html\/public/" /etc/apach
 RUN echo "ServerName housingstats-new.a1telekom.inside" >> /etc/apache2/apache2.conf
 RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" >> /usr/local/etc/php/conf.d/error.ini
 RUN echo "log_errors = On" >> /usr/local/etc/php/conf.d/error.ini
-
 RUN a2enmod rewrite
+
+# Add header filtering to container to fetch user
+RUN sed -i 's|</VirtualHost>|#</VirtualHost>|g' /etc/apache2/sites-enabled/000-default.conf
+RUN echo -e \
+"RewriteEngine on\nRewriteCond %{HTTP:Proxy-user} ^(.*)$\nRewriteRule .* - [E=REMOTE_USER:%1]\n</VirtualHost>" >> /etc/apache2/sites-enabled/000-default.conf
+
+
 
 # Fix file permissions in /var/log/html\ directory
 
