@@ -27,8 +27,9 @@ RUN a2enmod rewrite
 
 # Add header filtering to container to fetch user
 RUN sed -i 's|</VirtualHost>|#</VirtualHost>|g' /etc/apache2/sites-enabled/000-default.conf
-RUN echo -e \
-"RewriteEngine on\nRewriteCond %{HTTP:Proxy-user} ^(.*)$\nRewriteRule .* - [E=REMOTE_USER:%1]\n</VirtualHost>" >> /etc/apache2/sites-enabled/000-default.conf
+RUN echo "RewriteEngine on" >> /etc/apache2/sites-enabled/000-default.conf
+RUN echo "RewriteCond %{HTTP:Proxy-user} ^(.*)$" >> /etc/apache2/sites-enabled/000-default.conf
+RUN echo "RewriteRule .* - [E=REMOTE_USER:%1]\n</VirtualHost>" >> /etc/apache2/sites-enabled/000-default.conf
 
 
 
