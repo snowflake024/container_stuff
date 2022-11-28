@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+
+  sftp:
+     image: atmoz/sftp
+     volumes:
+        - /mnt/app-server/sftp/upload/:/home/wtadmin/upload
+#        - /srv/swarm_files/30_sftp/users.conf:/etc/sftp/users.conf:ro
+#        - /mnt/app-server/sftp/.ssh/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
+#        - /mnt/app-server/sftp/.ssh/ssh_host_rsa_key/:/etc/ssh/ssh_host_rsa_key
+        - /mnt/app-server/sftp/scripts:/etc/sftp.d
+     ports:
+        - "2202:22"
+#     networks:
+#        - applevel
+     command: wtadmin:dkyaNJUwq:1001
+#networks:
+#  applevel:
+#     driver: bridge
