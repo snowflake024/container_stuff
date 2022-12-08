@@ -3,13 +3,19 @@ version: '3.7'
 services:
   vpn-server: 
     image: hwdsl2/ipsec-vpn-server
+    volumes:
+       - /srv/docker_playground/bananapi/ikev2-vpn-data:/etc/ipsec.d
+       - /lib/modules:/lib/modules:ro
     environment:
-       - VPN_IPSEC_PSK=xxx
+       - VPN_IPSEC_PSK=preshared_psk_test
        - VPN_USER=vpnuser
-       - VPN_PASSWORD=xxx
+       - VPN_PASSWORD=resunpv
+    ports:
+       - 500:500/udp 
+       - 4500:4500/udp 
     network_mode: "host"
     privileged: true
     restart: always
 
 
-  vpn-client:
+  #vpn-client:
